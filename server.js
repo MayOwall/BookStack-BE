@@ -13,8 +13,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-let db;
-
 mongoClient.connect(
   `mongodb+srv://${MONGODB_ID}:${MONGODB_PASSWORD}@cluster0.sjgsexl.mongodb.net/bookstack?retryWrites=true&w=majority`,
   (err, client) => {
@@ -27,7 +25,12 @@ mongoClient.connect(
   }
 );
 
+// signup (회원가입)
 const signupRouter = require("./routers/signup");
 app.use("/signup", signupRouter);
+
+// signin (로그인)
+const signinRouter = require("./routers/signin");
+app.use("/signin", signinRouter);
 
 app.route("/").get((req, res) => res.send("Hello, Bookstack 📚"));
