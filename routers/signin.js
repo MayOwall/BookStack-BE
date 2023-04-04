@@ -28,13 +28,9 @@ router.post("/", async (req, res) => {
     }
 
     //jwt 발급
-    const token = jwt.sign(
-      { _id: userData._id, nickname: userData.nickname },
-      JWT_SECRET_KEY,
-      {
-        expiresIn: "1d",
-      }
-    );
+    const token = jwt.sign({ _id: userData._id }, JWT_SECRET_KEY, {
+      expiresIn: "1d",
+    });
 
     //성공여부 및 jwt 응답
     res.json({

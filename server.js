@@ -33,4 +33,7 @@ app.use("/signup", signupRouter);
 const signinRouter = require("./routers/signin");
 app.use("/signin", signinRouter);
 
+const stackRouter = require("./routers/stack");
+app.use("/stack", stackRouter);
+
 app.route("/").get((req, res) => res.send("Hello, Bookstack 📚"));
