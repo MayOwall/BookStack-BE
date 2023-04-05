@@ -9,12 +9,19 @@ router.get("/", async (req, res) => {
     const token = req.header("authorization");
     const { _id } = jwt.verify(token, JWT_SECRET_KEY);
     const { db } = req.app;
-    const { posts } = await db
+    const { nickname, profileImg, pageCount, bookCount, posts } = await db
       .collection("login")
       .findOne({ _id })
       .catch(() => res.status(200).json({ error: "no such id" }));
 
-    res.json(posts);
+    const nextData = {
+      nickname,
+      profileImg,
+      pageCount,
+      bookCount,
+      posts,
+    };
+    res.json(nextData);
   } catch (err) {
     console.log(err);
     if (err.message === "jwt expired") {
