@@ -21,6 +21,9 @@ router.post("/", async (req, res) => {
         _id,
         pw: hashedPw,
         nickname,
+        profileImg: "",
+        bookCount: 0,
+        posts: [],
       };
       db.collection("login").insertOne(newAccount);
       res.status(200).json({ result: "success" });

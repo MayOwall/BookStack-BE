@@ -21,16 +21,17 @@ router.get("/", async (req, res) => {
       bookCount,
       posts,
     };
-    res.json(nextData);
+
+    return res.json(nextData);
   } catch (err) {
     console.log(err);
     if (err.message === "jwt expired") {
-      res.status(419).json({ error: "Token Expired" });
+      res.status(200).json({ error: "Token Expired" });
+    } else if (err.message === "invalid token") {
+      res.status(200).json({ error: "Invalid Token" });
+    } else {
+      res.status(500).json({ result: "server error" });
     }
-    if (err.message === "invalid token") {
-      res.status(401).json({ error: "Invalid Token" });
-    }
-    res.status(500).json({ result: "server error" });
   }
 });
 
