@@ -91,6 +91,27 @@ router.post("/create", async (req, res) => {
   }
 });
 
+router.get("/detail/:no", async (req, res) => {
+  try {
+    const token = req.header("authorization");
+    const { _id } = jwt.verify(token, JWT_SECRET_KEY);
+    const { db } = req.app;
+    const { no } = req.params;
+    const post = await db.collection("post").findOne({ no: Number(no) });
+
+    return res.json(post);
+  } catch (err) {
+    console.log(err);
+    if (err.message === "jwt expired") {
+      res.status(200).json({ error: "Token Expired" });
+    } else if (err.message === "invalid token") {
+      res.status(200).json({ error: "Invalid Token" });
+    } else {
+      res.status(500).json({ result: "server error" });
+    }
+  }
+});
+
 router.post("/detail/quote/create", async (req, res) => {
   try {
     const token = req.header("authorization");
