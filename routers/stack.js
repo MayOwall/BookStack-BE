@@ -60,6 +60,54 @@ router.post("/create", async (req, res) => {
     user.bookIdCount += 1;
 
     await db.collection("login").updateOne({ _id }, { $set: user });
+
+    // post에도 새로운 데이터 추가
+
+    const newPost = {
+      _id:
+        new Date().toString().replace(/[(대한민국표준시)| ]/g, "") +
+        (bookIdCount + 1).toString(),
+      no: bookIdCount + 1,
+      title,
+      author,
+      publisher,
+      date,
+      detail,
+      quoteList: [],
+    };
+
+    await db.collection("post").insertOne(newPost);
+
+    res.json({ result: "success" });
+  } catch (err) {
+    console.log(err);
+    if (err.message === "jwt expired") {
+      res.status(200).json({ error: "Token Expired" });
+    } else if (err.message === "invalid token") {
+      res.status(200).json({ error: "Invalid Token" });
+    } else {
+      res.status(500).json({ result: "server error" });
+    }
+  }
+});
+
+router.post("/detail/quote/create", async (req, res) => {
+  try {
+    const token = req.header("authorization");
+    const tokenId = jwt.verify(token, JWT_SECRET_KEY)._id;
+    const { db } = req.app;
+    console.log("tokenId :", tokenId);
+    const { no, body } = req.body;
+
+    const { _id, quoteList } = await db.collection("post").findOne({ no });
+
+    body._id =
+      new Date().toString().replace(/[(대한민국표준시)| ]/g, "") +
+      quoteList.length;
+    quoteList.push(body);
+
+    await db.collection("post").updateOne({ _id }, { $set: { quoteList } });
+
     res.json({ result: "success" });
   } catch (err) {
     console.log(err);
