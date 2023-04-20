@@ -119,11 +119,13 @@ router.delete("/detail/:no", async (req, res) => {
     const { db } = req.app;
     const { no } = req.params;
 
-    const { posts } = await db.collection("login").findOne({ _id });
+    const { posts, bookCount } = await db.collection("login").findOne({ _id });
     let { stackList } = posts[posts.length - 1];
     stackList = stackList.filter((book) => book.no !== Number(no));
     posts[posts.length - 1].stackList = stackList;
-    await db.collection("login").updateOne({ _id }, { $set: { posts } });
+    await db
+      .collection("login")
+      .updateOne({ _id }, { $set: { posts, bookCount: bookCount - 1 } });
     await db.collection("post").deleteOne({ no: Number(no) });
 
     return res.json({ result: "success" });
