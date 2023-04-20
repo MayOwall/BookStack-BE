@@ -112,6 +112,33 @@ router.get("/detail/:no", async (req, res) => {
   }
 });
 
+router.delete("/detail/:no", async (req, res) => {
+  try {
+    const token = req.header("authorization");
+    const { _id } = jwt.verify(token, JWT_SECRET_KEY);
+    const { db } = req.app;
+    const { no } = req.params;
+
+    const { posts } = await db.collection("login").findOne({ _id });
+    let { stackList } = posts[posts.length - 1];
+    stackList = stackList.filter((book) => book.no !== Number(no));
+    posts[posts.length - 1].stackList = stackList;
+    await db.collection("login").updateOne({ _id }, { $set: { posts } });
+    await db.collection("post").deleteOne({ no: Number(no) });
+
+    return res.json({ result: "success" });
+  } catch (err) {
+    console.log(err);
+    if (err.message === "jwt expired") {
+      res.status(200).json({ error: "Token Expired" });
+    } else if (err.message === "invalid token") {
+      res.status(200).json({ error: "Invalid Token" });
+    } else {
+      res.status(500).json({ result: "server error" });
+    }
+  }
+});
+
 router.post("/detail/quote/create", async (req, res) => {
   try {
     const token = req.header("authorization");
