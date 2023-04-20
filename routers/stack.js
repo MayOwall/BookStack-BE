@@ -117,7 +117,6 @@ router.post("/detail/quote/create", async (req, res) => {
     const token = req.header("authorization");
     const tokenId = jwt.verify(token, JWT_SECRET_KEY)._id;
     const { db } = req.app;
-    console.log("tokenId :", tokenId);
     const { no, body } = req.body;
 
     const { _id, quoteList } = await db.collection("post").findOne({ no });
@@ -141,4 +140,30 @@ router.post("/detail/quote/create", async (req, res) => {
     }
   }
 });
+
+router.post("/detail/quote/delete", async (req, res) => {
+  try {
+    const token = req.header("authorization");
+    const tokenId = jwt.verify(token, JWT_SECRET_KEY)._id;
+    const { db } = req.app;
+    const { no, _id } = req.body;
+    const post = await db.collection("post").findOne({ no: Number(no) });
+    const nextQuoteList = post.quoteList.filter((v) => v._id !== _id);
+    await db
+      .collection("post")
+      .updateOne({ _id: post._id }, { $set: { quoteList: nextQuoteList } });
+
+    res.json({ result: "success" });
+  } catch (err) {
+    console.log(err);
+    if (err.message === "jwt expired") {
+      res.status(200).json({ error: "Token Expired" });
+    } else if (err.message === "invalid token") {
+      res.status(200).json({ error: "Invalid Token" });
+    } else {
+      res.status(500).json({ result: "server error" });
+    }
+  }
+});
+
 module.exports = router;
