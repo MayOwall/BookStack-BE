@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const { JWT_SECRET_KEY } = process.env;
 
+// 스택페이지 데이터 요청
 router.get("/", async (req, res) => {
   try {
     const token = req.header("authorization");
@@ -21,7 +22,6 @@ router.get("/", async (req, res) => {
       bookCount,
       posts,
     };
-
     return res.json(nextData);
   } catch (err) {
     console.log(err);
@@ -35,13 +35,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+// 새로운 책 생성 요청
 router.post("/create", async (req, res) => {
   try {
+    // db, 토큰, API body 확인
+    const { db } = req.app;
     const token = req.header("authorization");
     const { _id } = jwt.verify(token, JWT_SECRET_KEY);
-    const { db } = req.app;
-
     const { title, author, publisher, date, detail } = req.body;
+
+    // user 정보 업데이트
     const user = await db
       .collection("login")
       .findOne({ _id })
@@ -58,11 +61,9 @@ router.post("/create", async (req, res) => {
     posts[posts.length - 1].stackList.push(nextData);
     user.bookCount += 1;
     user.bookIdCount += 1;
-
     await db.collection("login").updateOne({ _id }, { $set: user });
 
-    // post에도 새로운 데이터 추가
-
+    // 새로운 post 추가
     const newPost = {
       _id:
         new Date().toString().replace(/[(대한민국표준시)| ]/g, "") +
@@ -75,9 +76,9 @@ router.post("/create", async (req, res) => {
       detail,
       quoteList: [],
     };
-
     await db.collection("post").insertOne(newPost);
 
+    // 프론트로의 응답
     res.json({ result: "success" });
   } catch (err) {
     console.log(err);
@@ -91,6 +92,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// 책 상세페이지 데이터 요청
 router.get("/detail/:no", async (req, res) => {
   try {
     const token = req.header("authorization");
@@ -112,6 +114,7 @@ router.get("/detail/:no", async (req, res) => {
   }
 });
 
+// 책 삭제 요청
 router.delete("/detail/:no", async (req, res) => {
   try {
     const token = req.header("authorization");
@@ -141,6 +144,7 @@ router.delete("/detail/:no", async (req, res) => {
   }
 });
 
+// quote 생성 요청
 router.post("/detail/quote/create", async (req, res) => {
   try {
     const token = req.header("authorization");
@@ -170,6 +174,7 @@ router.post("/detail/quote/create", async (req, res) => {
   }
 });
 
+// quote 삭제 요청
 router.post("/detail/quote/delete", async (req, res) => {
   try {
     const token = req.header("authorization");
