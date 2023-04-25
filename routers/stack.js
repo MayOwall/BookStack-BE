@@ -42,7 +42,7 @@ router.post("/create", async (req, res) => {
     const { db } = req.app;
     const token = req.header("authorization");
     const { _id } = jwt.verify(token, JWT_SECRET_KEY);
-    const { title, author, publisher, date, detail } = req.body;
+    const { title, author, publisher, date, detail, bookImage } = req.body;
 
     // user 정보 업데이트
     const user = await db
@@ -57,6 +57,7 @@ router.post("/create", async (req, res) => {
       publisher,
       date,
       detail,
+      bookImage,
     };
     posts[posts.length - 1].stackList.push(nextData);
     user.bookCount += 1;
@@ -74,6 +75,7 @@ router.post("/create", async (req, res) => {
       publisher,
       date,
       detail,
+      bookImage,
       quoteList: [],
     };
     await db.collection("post").insertOne(newPost);
