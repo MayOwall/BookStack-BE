@@ -33,7 +33,12 @@ app.use("/signup", signupRouter);
 const signinRouter = require("./routers/signin");
 app.use("/signin", signinRouter);
 
+// stack (스택 및 디테일)
 const stackRouter = require("./routers/stack");
 app.use("/stack", stackRouter);
+
+// image (이미지 업로드)
+const imageRouter = require("./routers/image");
+app.use("/image", imageRouter);
 
 app.route("/").get((req, res) => res.send("Hello, Bookstack 📚"));
