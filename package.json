@@ -4,7 +4,8 @@
   "description": "BookStack BackEnd with Express &amp; MongoDB 📚",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "repository": "https://github.com/MayOwall/BookStack-BE.git",
   "author": "MayOwall <pixartive@gmail.com>",
