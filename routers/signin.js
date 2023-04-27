@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { compareHash } = require("../utils");
 const { JWT_SECRET_KEY } = process.env;
 
+// 로그인 POST 핸들러
 router.post("/", async (req, res) => {
   try {
     const { _id, pw } = req.body;

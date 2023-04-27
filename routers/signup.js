@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { makeHash } = require("../utils");
 
+// 회원가입 핸들러
 router.post("/", async (req, res) => {
   try {
     const { _id, pw, nickname } = req.body;

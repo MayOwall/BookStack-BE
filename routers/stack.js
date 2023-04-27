@@ -116,7 +116,7 @@ router.get("/detail/:no", async (req, res) => {
   }
 });
 
-// 책 삭제 요청
+// 책 상세페이지 삭제 요청
 router.delete("/detail/:no", async (req, res) => {
   try {
     const token = req.header("authorization");

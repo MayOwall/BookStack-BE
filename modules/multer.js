@@ -1,3 +1,5 @@
+// multer config 설정 및 AWS S3 연동 관련 파일
+
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const aws = require("aws-sdk");

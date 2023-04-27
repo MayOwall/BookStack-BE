@@ -1,3 +1,4 @@
+// AWS S3 이미지 업로드 후 콜백 핸들러
 const uploadImage = async (req, res) => {
   if (req.file) {
     const json = {
@@ -15,6 +16,7 @@ const uploadImage = async (req, res) => {
   }
 };
 
+// AWS S3 이미지 삭제 후 콜백 핸들러
 const deleteImage = async (req, res) => {
   const { imageName } = req.body; // 객체 URL
   const imageArray = imageName.split("/");
