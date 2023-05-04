@@ -19,7 +19,7 @@ mongoClient.connect(
     if (err) throw err;
     app.db = client.db("bookstack");
 
-    app.listen(PORT, () => {
+    app.listen(PORT || 8080, () => {
       console.log("📡 BookStack BE is working");
     });
   }

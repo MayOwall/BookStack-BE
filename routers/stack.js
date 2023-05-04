@@ -3,6 +3,20 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const { JWT_SECRET_KEY } = process.env;
+const monthList = [
+  "January",
+  "Feburary",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 // 스택페이지 데이터 요청
 router.get("/", async (req, res) => {
@@ -59,7 +73,18 @@ router.post("/create", async (req, res) => {
       detail,
       bookImage,
     };
-    posts[posts.length - 1].stackList.push(nextData);
+    if (
+      posts[posts.length - 1].month ===
+      monthList[Number(date.split(".")[1]) - 1]
+    ) {
+      posts[posts.length - 1].stackList.push(nextData);
+    } else {
+      const nextPost = {
+        month: monthList[Number(date.split(".")[1]) - 1],
+        stackList: [nextData],
+      };
+      posts.push(nextPost);
+    }
     user.bookCount += 1;
     user.bookIdCount += 1;
     await db.collection("login").updateOne({ _id }, { $set: user });
@@ -127,7 +152,11 @@ router.delete("/detail/:no", async (req, res) => {
     const { posts, bookCount } = await db.collection("login").findOne({ _id });
     let { stackList } = posts[posts.length - 1];
     stackList = stackList.filter((book) => book.no !== Number(no));
-    posts[posts.length - 1].stackList = stackList;
+    if (!!stackList.length) {
+      posts[posts.length - 1].stackList = stackList;
+    } else {
+      posts.pop();
+    }
     await db
       .collection("login")
       .updateOne({ _id }, { $set: { posts, bookCount: bookCount - 1 } });
